@@ -1,9 +1,7 @@
-"streamlit\n",
-"pandas\n",
-"numpy\n",
-"matplotlib\n", 
-"seaborn\n",
-"scikit-learn\n",
-"openpyxl\n",
-"firebase-admin\n",
-"pyrebase4"
+streamlit
+pandas
+numpy
+matplotlib
+seaborn
+scikit-learn
+firebase-admin
