@@ -16,22 +16,14 @@ import numpy as np
 import io
 import zipfile
 import traceback
-from auth import login_ui
-import json
-import firebase_admin
 
-st.write("Seaborn loaded")
 
 st.set_page_config(page_title="Data Analyser", layout="wide")
 
 # -------------------------
 # Initialize session state
 # -------------------------
-if "logged_in" not in st.session_state:
-    st.session_state.logged_in = False
-if not st.session_state.logged_in:
-    login_ui()
-    st.stop()
+
 if "plot_buf" not in st.session_state:
     st.session_state["plot_buf"] = None        # last generated plot (BytesIO)
 if "pred_buf" not in st.session_state:
@@ -44,14 +36,6 @@ if "y_test" not in st.session_state:
     st.session_state["y_test"] = None
 if "y_pred" not in st.session_state:
     st.session_state["y_pred"] = None
-try:
-    firebase_key = json.loads(st.secrets["firebase_key"])
-    cred = credentials.Certificate("firebase_key")
-    if not firebase_admin._apps:
-        firebase_admin.initialize_app(cred)
-    db = firestore.client()
-except Exception as e:
-    st.warning("Firebase not connected. App will run without cloud saving.`")
     
 # small helper
 def fig_to_bytes(fig):
