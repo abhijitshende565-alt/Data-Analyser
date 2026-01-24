@@ -17,7 +17,6 @@ import io
 import zipfile
 import traceback
 
-
 st.set_page_config(page_title="Data Analyser", layout="wide")
 
 # -------------------------
@@ -36,7 +35,7 @@ if "y_test" not in st.session_state:
     st.session_state["y_test"] = None
 if "y_pred" not in st.session_state:
     st.session_state["y_pred"] = None
-    
+
 # small helper
 def fig_to_bytes(fig):
     buf = io.BytesIO()
@@ -53,27 +52,47 @@ st.title("📊 Data Analyser")
 # -------------------------
 # File uploader & preview
 # -------------------------
-uploaded_file = st.file_uploader("Upload CSV or Excel file", type=["csv", "xlsx"])
+uploaded_file = st.file_uploader("Upload Dataset", type=["csv", "xlsx"])
 df = None
 if uploaded_file is not None:
     try:
-        if uploaded_file.name.lower().endswith(".csv"):
+        if uploaded_file.name.endswith(".csv"):
             df = pd.read_csv(uploaded_file)
+        elif uploaded_file.name.endswith(".xlsx"):
+            df = pd.read_excel(uploaded_file)
         else:
             df = pd.read_excel(uploaded_file)
         st.success("✅ File uploaded successfully!")
-        st.success("Firebase Admin Imported Successfully!")
     except Exception as e:
         st.error("Failed to read file: " + str(e))
         st.stop()
 else:
-    st.info("Upload a CSV or Excel file to begin.")
+    st.info("Upload a file to begin.")
     st.stop()
 
-# Data preview & stats
-st.subheader("📋 Data Preview")
-st.dataframe(df.head())
+st.info(f" Dataset Shape Rows: {df.shape[0]} | Columns: {df.shape[1]}")
 
+
+# Data preview & stats
+
+st.subheader("View Specific Columns")
+selected_cols = st.multiselect(
+    "Select columns to view",
+    options=df.columns.tolist())
+if selected_cols:
+    st.dataframe(df[selected_cols])
+
+st.subheader("View Specific Rows")
+start_row = st.number_input("Start row index", min_value=0, max_value=len(df)-1, value=0)
+end_row = st.number_input("End row index", min_value=0, max_value=len(df)-1, value=min(10, len(df)-1))
+
+if start_row <= end_row:
+    st.dataframe(df.iloc[start_row:end_row+1])
+
+
+    st.subheader("📊 Exploratory Data Analysis (EDA)")
+    st.dataframe(df.describe())
+    
 st.subheader("📈 Advanced Statistics")
 col1, col2 = st.columns(2)
 with col1:
@@ -192,7 +211,7 @@ else:
                 st.write(f"R² Score: {r2_score(y_test, y_pred):.3f}")
                 st.write(f"Mean Absolute Error: {mean_absolute_error(y_test, y_pred):.3f}")
                 st.write(f"Mean Squared Error: {mean_squared_error(y_test, y_pred):.3f}")
-                st.dataframe(pred_df)
+                st.dataframe(pred_df) 
             except Exception as e:
                 st.error("ML Error: " + str(e))
                 st.text(traceback.format_exc())
@@ -202,30 +221,33 @@ else:
 # -------------------------
 # Saved visuals & predictions display
 # -------------------------
-st.subheader("Saved Visualization")
-if st.session_state["plot_buf"] is not None:
-    st.image(st.session_state["plot_buf"], caption="Saved Visualization")
-else:
-    st.info("No visualization generated yet.")
+show_saved_viz = st.checkbox("Show Saved Visualization")
 
-st.subheader("Saved ML Prediction")
-if st.session_state["pred_df"] is not None:
-    st.dataframe(st.session_state["pred_df"])
-else:
-    st.info("No ML prediction generated yet.")
+if show_saved_viz:
+    st.subheader("📌 Saved Visualization")
+    if st.session_state.get("plot_buf") is not None:
+        st.image(st.session_state["plot_buf"])
 
-st.subheader("Saved Model Evaluation Plot")
-if st.session_state["ml_plot_buf"] is not None:
-    st.image(st.session_state["ml_plot_buf"], caption="Saved Model Evaluation Plot")
-else:
-    st.info("No model evaluation plot generated yet.")
+show_saved_pred = st.checkbox("Show Saved ML Prediction")
+
+if show_saved_pred:
+    st.subheader("📌 Saved ML Prediction")
+    if st.session_state.get("pred_df") is not None:
+        st.dataframe(st.session_state["pred_df"])
+
+show_saved_eval = st.checkbox("Show Model Evaluation")
+
+if show_saved_eval:
+    st.subheader("📌 Saved Model Evaluation")
+    if st.session_state.get("ml_plot_buf") is not None:
+        st.image(st.session_state["ml_plot_buf"])
+
 
 # -------------------------
 # Download selected items (ZIP)
 # -------------------------
 st.subheader("📥 Download Selected Items")
 include_clean = st.checkbox("Cleaned Dataset (CSV)", value=True)
-include_head = st.checkbox("Head Of Dataset (CSV)", value=True)
 include_corr = st.checkbox("Correlation Matrix (CSV)", value=True)
 include_plots = st.checkbox("Visualisation Plot (PNG)", value=True)
 include_types = st.checkbox("Data Types (PNG)", value=True)
@@ -241,10 +263,6 @@ if st.button("Download ZIP"):
             if include_clean:
                 cleaned_df = df.dropna().drop_duplicates()
                 zf.writestr("cleaned_dataset.csv", cleaned_df.to_csv(index=False))
-
-            # head
-            if include_head:
-                zf.writestr("head_of_dataset.csv", df.head().to_csv(index=False))
 
             # correlation
             if include_corr:
