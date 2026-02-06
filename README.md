@@ -11,14 +11,13 @@ What this app does:-
   Train ML model
   Download reports
 
-Features in image:-
+Features in images:-
 <img width="1536" height="1024" alt="Data Analyser" src="https://github.com/user-attachments/assets/dd18b00b-5a6c-419e-bbed-fc14577db123" />
 
+<img width="1536" height="1024" alt="Data Analyser update" src="https://github.com/user-attachments/assets/b254c177-a9d7-4e9b-ba3f-f7df2422eb60" />
+
 Who is this for?:-
-• Students learning data analysis
-• Non-technical users
-• Quick EDA before ML
-• Freelancers & analysts
+For all
 
 How to use:-
   1. Open the app  
