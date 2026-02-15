@@ -12,11 +12,6 @@ import traceback
 import zipfile
 from newfeatures import search_by_word
 
-<head>
-<title>https://data-analyser-app.streamlit.app/.com homepage</title>
-<meta name="<meta name="google-site-verification" content="GJsyKzaV37eA0sbSTna4pf11FuSzJliupwH7UfAIx4c" />
-</head>
-
 st.set_page_config(page_title="Data Analyser", layout="wide")
 
 # ---------------- SESSION ----------------
