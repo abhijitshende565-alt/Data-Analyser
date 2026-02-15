@@ -13,7 +13,7 @@ import zipfile
 from newfeatures import search_by_word
 
 <head>
-<title>dataanalyser.com </title>
+<title>https://data-analyser-app.streamlit.app/.com homepage</title>
 <meta name="<meta name="google-site-verification" content="GJsyKzaV37eA0sbSTna4pf11FuSzJliupwH7UfAIx4c" />
 </head>
 
