@@ -12,6 +12,13 @@ import traceback
 import zipfile
 from newfeatures import search_by_word
 
+st.markdown(
+    """
+    <meta name="google-site-verification" content="GJsyKzaV37eA0sbSTna4pf11FuSzJliupwH7UfAIx4c" />
+    """,
+    unsafe_allow_html=True
+)
+
 st.set_page_config(page_title="Data Analyser", layout="wide")
 
 # ---------------- SESSION ----------------
