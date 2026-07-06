@@ -2,7 +2,7 @@
 Analyze datasets in seconds.
 No coding. Upload → Visualize → Predict.
 
-https://data-analyser-app.streamlit.app/
+
 
 What this app does:-
  Upload any dataset and instantly:
